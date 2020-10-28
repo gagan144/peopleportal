@@ -66,11 +66,10 @@ class Employee(User, BaseModelMixin):
 
     employee_id = models.CharField(max_length=64, unique=True, db_index=True, help_text='Unique employee code.')
     phone_no    = models.CharField(max_length=32, help_text='Phone number (along with country code) of the employee.')
-    team        = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, blank=True, db_index=True, help_text='Team in which this employee belongs to.')
+    team        = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, db_index=True, help_text='Team in which this employee belongs to.')
     position    = models.CharField(max_length=64, help_text='Position/Designation of the employee.')
 
-    permissions = models.ManyToManyField(Permission, blank=True, help_text='Individual permission(s) for this employee')
-    roles       = models.ManyToManyField(Role, blank=True, help_text='Role(s) of this employee.')
+    role       = models.ForeignKey(Role, on_delete=models.PROTECT, null=True, help_text='Role of this employee.')
 
     class Meta:
         verbose_name = 'Employee'

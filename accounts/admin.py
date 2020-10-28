@@ -33,11 +33,10 @@ class EmployeeAdmin(UserAdmin, BaseAdminMixin):
         (_('Details'), {'fields': ('first_name', 'last_name', 'employee_id', 'team', 'position')}),
         (_('Personal Information'), {'fields': ('email', 'phone_no')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'permissions', 'roles'),
+            'fields': ('is_active', 'role'),
         }),
         (_('Miscellaneous'), {'fields': ('created_on', 'modified_on', 'last_login', 'date_joined')}),
     )
     list_display = ('username', 'employee_id', 'first_name', 'last_name', 'team', 'position', 'is_active', 'last_login', 'date_joined')
     list_filter = ('team', 'position', 'date_joined', 'last_login')
-    filter_horizontal = ('permissions', 'roles')
     readonly_fields = ('last_login', 'date_joined')
