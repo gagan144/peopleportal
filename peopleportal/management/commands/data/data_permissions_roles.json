@@ -1,0 +1,18 @@
+{
+  "permissions": [
+    {"code": "employee_create", "name":"Can create employees", "resource": "employee"},
+    {"code": "employee_read", "name":"Can read employees", "resource": "employee"},
+    {"code": "employee_edit", "name":"Can edit employees", "resource": "employee"},
+    {"code": "employee_delete", "name":"Can delete employees", "resource": "employee"},
+    {"code": "conf_room_create", "name":"Can create conference room", "resource": "room"},
+    {"code": "conf_room_read", "name":"Can read conference room", "resource": "room"},
+    {"code": "conf_room_edit", "name":"Can edit conference room", "resource": "room"},
+    {"code": "conf_room_delete", "name":"Can delete conference room", "resource": "room"}
+  ],
+  "roles": [
+    {"name":"Admin", "permissions":["employee_create", "employee_read", "employee_edit", "employee_delete", "conf_room_create", "conf_room_read", "conf_room_edit", "conf_room_delete"]},
+    {"name":"Engg Manager", "permissions":["employee_create", "employee_read", "employee_edit"]},
+    {"name":"Office Manager", "permissions":["conf_room_create", "conf_room_read", "conf_room_edit"]},
+    {"name":"Default", "permissions":["employee_read", "conf_room_read"]}
+  ]
+}

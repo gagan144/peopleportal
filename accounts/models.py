@@ -23,6 +23,9 @@ class Permission(BaseModelMixin):
     name    = models.CharField(max_length=255, help_text='Name of the permission.')
     resource = models.CharField(max_length=64, choices=CH_RESOURCES, db_index=True, help_text='Resource on which this permission is valid.')
 
+    class Meta:
+        unique_together = ('resource', 'code')
+
     def __str__(self):
         return self.name
 
