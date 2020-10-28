@@ -1,0 +1,8 @@
+[
+  {"name": "Management", "description": "Management"},
+  {"name": "Android Team", "description": "Android Team"},
+  {"name": "IOS Team", "description": "IOS Team"},
+  {"name": "QA", "description": "QA"},
+  {"name": "Engg", "description": "Engg"},
+  {"name": "Product", "description": "Product"}
+]

@@ -25,7 +25,7 @@ class Command(BaseCommand):
     can_import_settings = True
 
     def handle(self, *args, **options):
-        from accounts.models import Permission, Role
+        from accounts.models import Permission, Role, Team
 
         self.stdout.write("Initializing system...")
         path_data = os.path.join(DIR_DATA, "data_permissions_roles.json")
@@ -60,6 +60,19 @@ class Command(BaseCommand):
                 else:
                     self.stdout.write(self.style.ERROR("\t[ERROR] Invalid permission(s) in the role '{}'.".format(role["name"])))
         self.stdout.write("Done.")
+
+
+        # Team
+        path_data_team = os.path.join(DIR_DATA, 'data_team.json')
+        self.stdout.write(f"Reading team data from '{path_data_team}'...")
+        with open(path_data_team, 'r') as f:
+            data_team = json.loads(f.read())
+
+        self.stdout.write("Upserting 'Teams' in the database...")
+        for tm in data_team:
+            Team.objects.update_or_create(name=tm["name"], defaults={"description": tm["description"]})
+        self.stdout.write("Done.")
+
 
         # Completed
         self.stdout.write(self.style.SUCCESS('Initialization finished!'))
