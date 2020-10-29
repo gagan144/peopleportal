@@ -12,7 +12,7 @@ def home(request):
     return HttpResponseRedirect(reverse('console'))
 
 
-@employee_login_required
+@employee_login_required(allowed_permission_codes=None)
 def console(request):
     """
     View to handle console screen.
