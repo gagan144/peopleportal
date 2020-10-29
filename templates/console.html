@@ -204,12 +204,17 @@
     <div class="container" style="width: 90%; max-width: unset; padding: 10px 20px;" >
 
         <div style="margin-bottom: 20px;">
-            <span ui-sref="employees" class="btn_tab" ng-class="{'active': $state.current.name=='employees'}">
-                Employee
-            </span>
-            <span ui-sref="rooms" class="btn_tab" ng-class="{'active': $state.current.name=='rooms'}">
-                Room
-            </span>
+            {% if 'employee' in request.emp_permissions.resources %}
+                <span ui-sref="employees" class="btn_tab" ng-class="{'active': $state.current.name=='employees'}">
+                    Employee
+                </span>
+            {% endif %}
+
+            {% if 'room' in request.emp_permissions.resources %}
+                <span ui-sref="rooms" class="btn_tab" ng-class="{'active': $state.current.name=='rooms'}">
+                    Room
+                </span>
+            {% endif %}
         </div>
 
         <div ui-view></div>
@@ -253,7 +258,7 @@
                     templateUrl: "tmpl_rooms",
                     controller: 'RoomCtrl',
                 });
-            $urlRouterProvider.otherwise("/employees");
+            $urlRouterProvider.otherwise("/{{ request.emp_permissions.resources.0 }}s");
 
         })
         .run(function($rootScope, $http, $cookies, $state) {
