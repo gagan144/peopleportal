@@ -16,7 +16,7 @@ class EmployeeResource(ModelResource):
         max_limit = None
         list_allowed_methods = ['get']
         include_resource_uri = False
-        authentication = EmployeeAuthentication()
+        authentication = EmployeeAuthentication(list_permission_codes=['employee_read'])
         excludes = ['is_staff', 'is_superuser', 'password']
 
 

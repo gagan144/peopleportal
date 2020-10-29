@@ -20,7 +20,10 @@ class PermissionMiddleware:
 
                 # Set values in the request
                 request.employee = employee     # This is used to check if request if for an employee
-                request.emp_permissions = list(employee.role.permissions.all().values_list('code', flat=True))
+                request.emp_permissions = {
+                    "codes": list(employee.role.permissions.all().values_list('code', flat=True)),
+                    "resources": list(employee.role.permissions.all().values_list('resource', flat=True).distinct())
+                }
 
             except Employee.DoesNotExist:
                 pass

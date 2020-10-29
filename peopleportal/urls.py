@@ -26,5 +26,6 @@ urlpatterns = [
     path('console/', views.console, name='console'),
 
     path('accounts/', include('accounts.urls')),
+    path('conference/', include('conference.urls')),
     path('admin/', admin.site.urls),
 ]

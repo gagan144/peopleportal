@@ -44,8 +44,8 @@
 
             <div ng-if="ui_flags.data==ST_AJAX.ERROR" class="api_error" align="center">
                 <i class="fa fa-exclamation-triangle text-danger"></i>
-                <div class="title">Error! Something went wrong.</div>
-                <button class="btn btn-outline-danger">Try Again</button>
+                <div class="title">{$ ui_flags.data_error $}</div>
+                <button class="btn btn-outline-danger" ng-click="getEmployees()">Try Again</button>
             </div>
 
             <div ng-if="ui_flags.data==ST_AJAX.COMPLETED">
@@ -63,7 +63,7 @@
                                         <i class="fa fa-search"></i>
                                     </span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Search by name, role or team" aria-describedby="inputGroup-search-emp">
+                                <input type="text" ng-model="search_text" class="form-control" placeholder="Search by name, role or team" aria-describedby="inputGroup-search-emp">
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="row in data_employees">
+                            <tr ng-repeat="row in data_employees|filter:search_text">
                                 <td>{$ row.employee_id $}</td>
                                 <td>{$ row.first_name $} {$ row.last_name $}</td>
                                 <td>{$ row.email $}</td>
@@ -100,7 +100,66 @@
     </script>
 
     <script type="text/ng-template" id="tmpl_rooms">
-        Rooms Partial
+        <div>
+
+            <div ng-if="ui_flags.data==ST_AJAX.LOADING" class="loading" align="center">
+                <img src="{% get_static_prefix %}images/loading_spinner.gif" >
+                <div class="title">Loading...</div>
+            </div>
+
+            <div ng-if="ui_flags.data==ST_AJAX.ERROR" class="api_error" align="center">
+                <i class="fa fa-exclamation-triangle text-danger"></i>
+                <div class="title">{$ ui_flags.data_error $}</div>
+                <button class="btn btn-outline-danger" ng-click="getRooms()">Try Again</button>
+            </div>
+
+            <div ng-if="ui_flags.data==ST_AJAX.COMPLETED">
+
+                <div ng-if="data_rooms.length==0" align="center" style="border: dashed 1px black; padding: 30px;">
+                    <img src="{% get_static_prefix %}images/conference_room.png" style="width: 400px;margin: 20px 0px 20px 0px;">
+                    <h4 class="text-primary">No rooms found!</h4>
+                </div>
+                <div ng-if="data_rooms.length">
+                    <div class="row">
+                        <div class="col-3 offset-9">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-search-emp">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                </div>
+                                <input type="text" ng-model="search_text" class="form-control" placeholder="Search by name, capacity" aria-describedby="inputGroup-search-emp">
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ROOM ID</th>
+                                <th>NAME</th>
+                                <th>BOOKING EMAIL</th>
+                                <th>SITTING</th>
+                                <th>CURRENT STATUS</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="row in data_rooms|filter:search_text">
+                                <td>{$ row.room_id $}</td>
+                                <td>{$ row.name $}</td>
+                                <td>{$ row.booking_email $}</td>
+                                <td>{$ row.sitting_capacity $}</td>
+                                <td>{$ row.status $}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+        </div>
     </script>
     <!-- ========== /Templates ========== -->
 
@@ -192,6 +251,7 @@
                 .state('rooms', {
                     url: "/rooms",
                     templateUrl: "tmpl_rooms",
+                    controller: 'RoomCtrl',
                 });
             $urlRouterProvider.otherwise("/employees");
 
@@ -229,6 +289,12 @@
                     },
                     function (responseError){
                         $scope.ui_flags.data = ST_AJAX.ERROR;
+
+                        var error_msg = "Error! Something went wrong.";
+                        if (responseError.status >= 400 && responseError.status <= 499){
+                            error_msg = "Unauthorized Access!";
+                        }
+                        $scope.ui_flags.data_error = error_msg;
                     }
                 );
             };
@@ -237,7 +303,43 @@
                 $scope.getEmployees();
             }
             __init__();
-        })
+        });
+
+
+        APP.controller('RoomCtrl', function($scope, $http){
+            $scope.ui_flags = {
+                data: ST_AJAX.LOADING
+            };
+            $scope.data_rooms = [];
+
+
+            $scope.getRooms = function () {
+                $scope.ui_flags.data = ST_AJAX.LOADING;
+
+                $http.get('/conference/api/rooms/?format=json', {
+                    params: {}
+                }).then(
+                    function (response) {
+                        $scope.data_rooms = response.data.objects;
+                        $scope.ui_flags.data = ST_AJAX.COMPLETED;
+                    },
+                    function (responseError){
+                        $scope.ui_flags.data = ST_AJAX.ERROR;
+
+                        var error_msg = "Error! Something went wrong.";
+                        if (responseError.status >= 400 && responseError.status <= 499){
+                            error_msg = "Unauthorized Access!";
+                        }
+                        $scope.ui_flags.data_error = error_msg;
+                    }
+                );
+            };
+
+            function __init__() {
+                $scope.getRooms();
+            }
+            __init__();
+        });
 
 
     </script>
