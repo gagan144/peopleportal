@@ -42,6 +42,23 @@ class Role(BaseModelMixin):
     def __str__(self):
         return self.name
 
+    def to_json(self):
+        permissions = {}
+
+        for perm in self.permissions.all().order_by('resource', 'code'):
+            if perm.resource not in permissions:
+                permissions[perm.resource] = []
+
+            permissions[perm.resource].append({
+                "code": perm.code,
+                "name": perm.name
+            })
+
+        return {
+            "name": self.name,
+            "permissions": permissions
+        }
+
 # ---------- /Authorization Models ----------
 
 

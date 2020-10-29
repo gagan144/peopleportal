@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from peopleportal.decorators import employee_login_required
+from accounts.models import Role
 
 def home(request):
     """
@@ -18,5 +19,7 @@ def console(request):
     View to handle console screen.
     """
 
-    data = {}
+    data = {
+        'list_roles': [role.to_json() for role in Role.objects.all()]
+    }
     return render(request, 'console.html', data)

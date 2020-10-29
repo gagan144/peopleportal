@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'peopleportal',
     'accounts',
     'conference',
+    'utilities',
 ]
 
 MIDDLEWARE = [

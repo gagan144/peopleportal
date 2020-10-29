@@ -1,4 +1,4 @@
-{% load static %}
+{% load static commontags %}
 <!doctype html>
 <html lang="en" ng-app="ConsoleApp">
 <head>
@@ -279,6 +279,8 @@
 
             $http.defaults.xsrfCookieName = 'csrftoken';
             $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+            $rootScope.LIST_ROLES = {{ list_roles|jsonify:False|safe }};
 
             $rootScope.$state = $state;
             $rootScope.ST_AJAX = ST_AJAX;
