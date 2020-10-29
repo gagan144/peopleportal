@@ -1,3 +1,32 @@
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }
+
+
+.loading{
+    border: dashed 1px black;
+    padding: 130px 30px 30px 30px;
+    height: 350px;
+}
+.loading > img{
+    height: 50px;
+}
+.loading > .title{
+    font-size: x-large;
+    margin-top: 10px;
+}
+
+.api_error{
+    border: dashed 1px black;
+    padding: 110px 30px 30px 30px;
+    height: 350px;
+}
+.api_error > .fa{
+    font-size: 80px;
+}
+.api_error > .title{
+    color: #dc3545;
+    font-size: large;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
