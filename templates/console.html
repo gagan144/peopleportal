@@ -66,7 +66,6 @@
                                 <input type="text" class="form-control" placeholder="Search by name, role or team" aria-describedby="inputGroup-search-emp">
                             </div>
                         </div>
-
                     </div>
                     <table class="table table-bordered table-striped">
                         <thead>
@@ -81,13 +80,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr ng-repeat="row in data_employees">
+                                <td>{$ row.employee_id $}</td>
+                                <td>{$ row.first_name $} {$ row.last_name $}</td>
+                                <td>{$ row.email $}</td>
+                                <td>{$ row.position $}</td>
+                                <td>{$ row.team.name $}</td>
+                                <td>{$ row.phone_no $}</td>
                                 <td></td>
                             </tr>
                         </tbody>
@@ -95,8 +94,6 @@
                 </div>
 
             </div>
-
-
 
 
         </div>
@@ -213,11 +210,33 @@
         APP.controller('MainCtrl', function ($scope) {
         });
 
-        APP.controller('EmployeeCtrl', function($scope){
+        APP.controller('EmployeeCtrl', function($scope, $http){
             $scope.ui_flags = {
                 data: ST_AJAX.LOADING
             };
             $scope.data_employees = [];
+
+
+            $scope.getEmployees = function () {
+                $scope.ui_flags.data = ST_AJAX.LOADING;
+
+                $http.get('/accounts/api/employees/?format=json', {
+                    params: {}
+                }).then(
+                    function (response) {
+                        $scope.data_employees = response.data.objects;
+                        $scope.ui_flags.data = ST_AJAX.COMPLETED;
+                    },
+                    function (responseError){
+                        $scope.ui_flags.data = ST_AJAX.ERROR;
+                    }
+                );
+            };
+
+            function __init__() {
+                $scope.getEmployees();
+            }
+            __init__();
         })
 
 
