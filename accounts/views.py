@@ -70,7 +70,7 @@ def api_employee_delete(request):
             return ApiResponse.http(status=ApiResponse.ST_SUCCESS, message='Employee successfully deleted')
 
         except Employee.DoesNotExist:
-            return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Invalid employee id.')
+            return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Invalid employee.')
     else:
         return ApiResponse.http(status=ApiResponse.ST_FORBIDDEN, message='Use Post!')
 
@@ -92,6 +92,34 @@ def api_employee_create(request):
         else:
             errors = dict(form_employee.errors)
             return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Validation errors.', errors=errors)
+    else:
+        return ApiResponse.http(status=ApiResponse.ST_FORBIDDEN, message='Use Post!')
+
+
+@employee_login_required(allowed_permission_codes=['employee_edit'])
+def api_employee_edit(request):
+    """
+    API to to edit an employee.
+    """
+
+    if request.method.lower() == 'post':
+
+        data = request.POST.dict()
+        employee_id = int(request.POST['employee_id'])
+
+        try:
+            employee = Employee.objects.get(id=employee_id)
+
+            # TODO: Validate employee details
+            # TODO: Update employee details in db
+
+            return ApiResponse.http(
+                status=ApiResponse.ST_SUCCESS,
+                message='Success! Dummy success response indicating that db was updated.',
+                emp_id=employee.employee_id
+            )
+        except Employee.DoesNotExist:
+            return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Invalid employee.')
     else:
         return ApiResponse.http(status=ApiResponse.ST_FORBIDDEN, message='Use Post!')
 # ----- /Employee CRUD -----

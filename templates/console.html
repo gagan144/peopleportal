@@ -102,7 +102,7 @@
                                 <td>{$ ::employee.phone_no $}</td>
                                 <td>
                                     {% if 'employee_edit' in request.emp_permissions.codes %}
-                                        <span class="fa fa-pencil btn_action"></span>
+                                        <span class="fa fa-pencil btn_action" ng-click="editEmployee(employee)"></span>
                                     {% endif %}
 
                                     {% if 'employee_delete' in request.emp_permissions.codes %}
@@ -468,7 +468,7 @@
                                     if(response.data.status=='success'){
                                         $uibModalInstance.close(response.data);
                                     }else{
-                                        alert("Denied! Unable to delete employee.");
+                                        alert("Error: "+angular.toJson(response.data));
                                     }
 
                                 },
@@ -493,6 +493,33 @@
                     // Modal Closed
                 });
 
+            };
+
+            $scope.editEmployee = function(employee){
+                var fd = new FormData();
+                fd.append('employee_id', employee["id"]);
+
+                $http.post(
+                    "/accounts/employee/edit/",
+                    fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }
+                ).then(
+                    function (response) {
+                        if(response.data.status=='success'){
+                            alert("Success: "+angular.toJson(response.data));   // TODO: remove
+                            $scope.getEmployees();
+                        }else{
+                            alert("Denied! Unable to edit employee.");
+                        }
+
+                    },
+                    function (responseError) {
+                        alert("Error! Unable to edit employee.");
+                    }
+                );
             };
 
             function __init__() {
