@@ -29,6 +29,11 @@
             font-weight: 600;
         }
 
+        .btn_action{
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body ng-cloak ng-controller="MainCtrl">
@@ -80,14 +85,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="row in data_employees|filter:search_text">
-                                <td>{$ row.employee_id $}</td>
-                                <td>{$ row.first_name $} {$ row.last_name $}</td>
-                                <td>{$ row.email $}</td>
-                                <td>{$ row.position $}</td>
-                                <td>{$ row.team.name $}</td>
-                                <td>{$ row.phone_no $}</td>
-                                <td></td>
+                            <tr ng-repeat="employee in data_employees|filter:search_text">
+                                <td>{$ ::employee.employee_id $}</td>
+                                <td>{$ ::employee.first_name $} {$ ::employee.last_name $}</td>
+                                <td>{$ ::employee.email $}</td>
+                                <td>{$ ::employee.position $}</td>
+                                <td>{$ ::employee.team.name $}</td>
+                                <td>{$ ::employee.phone_no $}</td>
+                                <td>
+                                    {% if 'employee_edit' in request.emp_permissions.codes %}
+                                        <span class="fa fa-pencil btn_action"></span>
+                                    {% endif %}
+
+                                    {% if 'employee_delete' in request.emp_permissions.codes %}
+                                        <span class="fa fa-trash btn_action" ng-click="deleteEmployee(employee)" ng-if="::employee.id!={{ request.employee.id }}"></span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -302,6 +315,34 @@
                         $scope.ui_flags.data_error = error_msg;
                     }
                 );
+            };
+
+            $scope.deleteEmployee = function(employee){
+                if(confirm("Are you sure you want to delete this employee?")){
+                    var fd = new FormData();
+                    fd.append('employee_id', employee["id"]);
+
+                    $http.post(
+                        "/accounts/employee/delete/",
+                        fd,
+                        {
+                            transformRequest: angular.identity,
+                            headers: {'Content-Type': undefined}
+                        }
+                    ).then(
+                        function (response) {
+                            if(response.data.status=='success'){
+                                $scope.getEmployees();
+                            }else{
+                                alert("Denied! Unable to delete employee.");
+                            }
+
+                        },
+                        function (responseError) {
+                            alert("Error! Unable to delete employee.");
+                        }
+                    );
+                }
             };
 
             function __init__() {

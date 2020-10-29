@@ -20,6 +20,14 @@ class EmployeeResource(ModelResource):
         excludes = ['is_staff', 'is_superuser', 'password']
 
 
+    # def apply_filters(self, request, applicable_filters):
+    #     base_object_list = super().apply_filters(request, applicable_filters)
+    #
+    #     base_object_list = base_object_list.exclude(id=request.employee.id)
+    #
+    #     return base_object_list.order_by('id')
+
+
     def dehydrate(self, bundle):
         obj = bundle.obj
 

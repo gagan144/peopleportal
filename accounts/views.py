@@ -4,6 +4,9 @@ from django.contrib import auth
 from django.urls import reverse
 
 from accounts.models import Employee
+from peopleportal.decorators import employee_login_required
+from utilities.api_utils import ApiResponse
+
 
 def login(request):
     """
@@ -45,3 +48,29 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('accounts__login'))
+
+
+# ----- Employee CRUD -----
+
+@employee_login_required(allowed_permission_codes=['employee_delete'])
+def api_employee_delete(request):
+    """
+    API to to delete an employee.
+    """
+
+    if request.method.lower() == 'post':
+        employee_id = int(request.POST['employee_id'])
+
+        try:
+            employee = Employee.objects.get(id=employee_id)
+
+            employee.delete()
+
+            return ApiResponse.http(status=ApiResponse.ST_SUCCESS, message='Employee successfully deleted')
+
+        except Employee.DoesNotExist:
+            return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Invalid employee id.')
+    else:
+        return ApiResponse.http(status=ApiResponse.ST_FORBIDDEN, message='Use Post!')
+
+# ----- /Employee CRUD -----
