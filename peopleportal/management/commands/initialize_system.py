@@ -4,8 +4,8 @@ import os
 from django.db import transaction
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DIR_DATA = os.path.join(BASE_DIR, "data")
+DIR_BASE = os.path.dirname(os.path.abspath(__file__))
+DIR_DATA = os.path.join(DIR_BASE, "data")
 
 
 class Command(BaseCommand):
