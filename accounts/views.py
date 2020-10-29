@@ -6,6 +6,7 @@ from django.urls import reverse
 from accounts.models import Employee
 from peopleportal.decorators import employee_login_required
 from utilities.api_utils import ApiResponse
+from accounts.forms import EmployeeForm
 
 
 def login(request):
@@ -73,4 +74,24 @@ def api_employee_delete(request):
     else:
         return ApiResponse.http(status=ApiResponse.ST_FORBIDDEN, message='Use Post!')
 
+
+@employee_login_required(allowed_permission_codes=['employee_create'])
+def api_employee_create(request):
+    """
+    API to to create an employee.
+    """
+
+    if request.method.lower() == 'post':
+
+        data = request.POST.dict()
+        form_employee = EmployeeForm(data=data)
+
+        if form_employee.is_valid():
+            new_employee = form_employee.save()
+            return ApiResponse.http(status=ApiResponse.ST_SUCCESS, message='New Employee successfully created!')
+        else:
+            errors = dict(form_employee.errors)
+            return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Validation errors.', errors=errors)
+    else:
+        return ApiResponse.http(status=ApiResponse.ST_FORBIDDEN, message='Use Post!')
 # ----- /Employee CRUD -----

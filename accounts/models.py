@@ -55,6 +55,7 @@ class Role(BaseModelMixin):
             })
 
         return {
+            "id": self.id,
             "name": self.name,
             "permissions": permissions
         }
@@ -73,6 +74,13 @@ class Team(BaseModelMixin):
 
     def __str__(self):
         return self.name
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description
+        }
 
 
 class Employee(User, BaseModelMixin):

@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from peopleportal.decorators import employee_login_required
-from accounts.models import Role
+from accounts.models import Role, Team
 
 def home(request):
     """
@@ -20,6 +20,7 @@ def console(request):
     """
 
     data = {
-        'list_roles': [role.to_json() for role in Role.objects.all()]
+        'list_roles': [role.to_json() for role in Role.objects.all()],
+        'list_teams': [team.to_json() for team in Team.objects.all()]
     }
     return render(request, 'console.html', data)

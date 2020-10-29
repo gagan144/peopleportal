@@ -42,6 +42,26 @@
     <script type="text/ng-template" id="tmpl_employees">
         <div>
 
+            <div class="row">
+                <div class="col-3 offset-6" align="right">
+                    {% if 'employee_create' in request.emp_permissions.codes %}
+                        <button class="btn btn-light" ng-click="addEmployee()">
+                            <i class="fa fa-plus"></i> New Employee
+                        </button>
+                    {% endif %}
+                </div>
+                <div ng-show="data_employees.length" class="col-3">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-search-emp">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" ng-model="search_text" class="form-control" placeholder="Search by name, role or team" aria-describedby="inputGroup-search-emp">
+                    </div>
+                </div>
+            </div>
+
             <div ng-if="ui_flags.data==ST_AJAX.LOADING" class="loading" align="center">
                 <img src="{% get_static_prefix %}images/loading_spinner.gif" >
                 <div class="title">Loading...</div>
@@ -60,18 +80,6 @@
                     <h4 class="text-primary">No Employees found!</h4>
                 </div>
                 <div ng-if="data_employees.length">
-                    <div class="row">
-                        <div class="col-3 offset-9">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-search-emp">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                </div>
-                                <input type="text" ng-model="search_text" class="form-control" placeholder="Search by name, role or team" aria-describedby="inputGroup-search-emp">
-                            </div>
-                        </div>
-                    </div>
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -108,9 +116,88 @@
 
             </div>
 
-
         </div>
     </script>
+
+
+    <script type="text/ng-template" id="tmpl_modal_add_employee">
+        <form name="form_addEmployee" novalidate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-plus"></i> Add New Employee
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="onclick_close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="fld_name">Name</label>
+                                <input type="text" ng-model="data.first_name" name="first_name" class="form-control" id="fld_name" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="fld_empid">EMP ID</label>
+                                <input type="text" ng-model="data.employee_id" name="employee_id" class="form-control" id="fld_empid" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="fld_name">Email</label>
+                                <input type="email" ng-model="data.email" name="email" class="form-control" id="fld_name" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="fld_empid">Phone No</label>
+                                <input type="text" ng-model="data.phone_no" name="phone_no" class="form-control" id="fld_empid" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="fld_name">Team</label>
+                                <select ng-model="data.team" name="team" class="form-control" id="fld_name" required>
+                                    <option value="">-- Please Select --</option>
+                                    <option value="{$ team.id $}" ng-repeat="team in LIST_TEAMS">{$ team.name $}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="fld_empid">Position</label>
+                                <input type="text" ng-model="data.position" name="position" class="form-control" id="fld_empid" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <div style="font-size: 16px; font-weight: 600;">Roles & Permissions</div>
+                        <hr style="margin: 5px 0px 10px 0px"/>
+                        <div class="form-group">
+                            <label for="fld_name">Role</label>
+                            <select ng-model="data.role" name="role" class="form-control" id="fld_name" required>
+                                <option value="">-- Please Select --</option>
+                                <option value="{$ role.id $}" ng-repeat="role in LIST_ROLES">{$ role.name $}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="onclick_close()">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="onsubmit_form(form_addEmployee)" ng-disabled="form_addEmployee.$invalid">Create</button>
+                </div>
+            </div>
+        </form>
+    </script>
+
 
     <script type="text/ng-template" id="tmpl_rooms">
         <div>
@@ -252,6 +339,7 @@
         var APP = angular.module('ConsoleApp', [
             'ngCookies',
             'ui.router',
+            'ui.bootstrap',
         ])
         .config(function($interpolateProvider, $httpProvider, $stateProvider, $urlRouterProvider){
             $interpolateProvider.startSymbol('{$');
@@ -281,6 +369,7 @@
             $http.defaults.xsrfHeaderName = 'X-CSRFToken';
 
             $rootScope.LIST_ROLES = {{ list_roles|jsonify:False|safe }};
+            $rootScope.LIST_TEAMS = {{ list_teams|jsonify:False|safe }};
 
             $rootScope.$state = $state;
             $rootScope.ST_AJAX = ST_AJAX;
@@ -290,7 +379,7 @@
         APP.controller('MainCtrl', function ($scope) {
         });
 
-        APP.controller('EmployeeCtrl', function($scope, $http){
+        APP.controller('EmployeeCtrl', function($scope, $http, $uibModal){
             $scope.ui_flags = {
                 data: ST_AJAX.LOADING
             };
@@ -345,6 +434,65 @@
                         }
                     );
                 }
+            };
+
+            $scope.addEmployee = function(){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'tmpl_modal_add_employee',
+                    size: 'lg',
+                    backdrop: 'static',
+                    controller: function($scope, $uibModalInstance){
+                        $scope.data = {};
+
+                        $scope.onsubmit_form = function(form_obj){
+
+                            if(form_obj.$invalid){
+                                return;
+                            }
+
+                            var fd = new FormData();
+                            for(var k in $scope.data){
+                                fd.append(k, $scope.data[k]);
+                            }
+
+                            $http.post(
+                                "/accounts/employee/create/",
+                                fd,
+                                {
+                                    transformRequest: angular.identity,
+                                    headers: {'Content-Type': undefined}
+                                }
+                            ).then(
+                                function (response) {
+                                    if(response.data.status=='success'){
+                                        $uibModalInstance.close(response.data);
+                                    }else{
+                                        alert("Denied! Unable to delete employee.");
+                                    }
+
+                                },
+                                function (responseError) {
+                                    alert("Error! Unable to delete employee.");
+                                }
+                            );
+
+
+                        };
+
+                        $scope.onclick_close = function(){
+                            $uibModalInstance.dismiss('cancel');
+                        }
+                    },
+                });
+
+                modalInstance.result.then(function (result) {
+                    // Success
+                    $scope.getEmployees();
+                }, function () {
+                    // Modal Closed
+                });
+
             };
 
             function __init__() {
