@@ -99,6 +99,7 @@ class Employee(User, BaseModelMixin):
     class Meta:
         verbose_name = 'Employee'
         verbose_name_plural = 'Employees'
+        ordering = ('employee_id',)
 
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)

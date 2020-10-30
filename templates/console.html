@@ -119,7 +119,65 @@
         </div>
     </script>
 
+    <script type="text/ng-template" id="tmpl_form_employee">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_name">Name</label>
+                    <input type="text" ng-model="data.first_name" name="first_name" class="form-control" id="fld_name" required>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_empid">EMP ID <small class="text-muted">(Unique)</small></label>
+                    <input type="text" ng-model="data.employee_id" name="employee_id" class="form-control" id="fld_empid" required ng-disabled="is_edit_mode">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_email">Email</label>
+                    <input type="email" ng-model="data.email" name="email" class="form-control" id="fld_email" required>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_empid">Phone No</label>
+                    <input type="text" ng-model="data.phone_no" name="phone_no" class="form-control" id="fld_empid" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_team">Team</label>
+                    <select ng-model="data.team" name="team" class="form-control" id="fld_team" required>
+                        <option value="">-- Please Select --</option>
+                        <option value="{$ team.id $}" ng-repeat="team in LIST_TEAMS">{$ team.name $}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_position">Position</label>
+                    <input type="text" ng-model="data.position" name="position" class="form-control" id="fld_position" required>
+                </div>
+            </div>
+        </div>
 
+        <div style="margin-top: 20px;">
+            <div style="font-size: 16px; font-weight: 600;">Roles & Permissions</div>
+            <hr style="margin: 5px 0px 10px 0px"/>
+            <div class="form-group">
+                <label for="fld_role">Role</label>
+                <select ng-model="data.role" name="role" class="form-control" id="fld_role" required>
+                    <option value="">-- Please Select --</option>
+                    <option value="{$ role.id $}" ng-repeat="role in LIST_ROLES">{$ role.name $}</option>
+                </select>
+            </div>
+        </div>
+    </script>
     <script type="text/ng-template" id="tmpl_modal_add_employee">
         <form name="form_addEmployee" novalidate>
             <div class="modal-content">
@@ -132,63 +190,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="fld_name">Name</label>
-                                <input type="text" ng-model="data.first_name" name="first_name" class="form-control" id="fld_name" required>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="fld_empid">EMP ID</label>
-                                <input type="text" ng-model="data.employee_id" name="employee_id" class="form-control" id="fld_empid" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="fld_name">Email</label>
-                                <input type="email" ng-model="data.email" name="email" class="form-control" id="fld_name" required>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="fld_empid">Phone No</label>
-                                <input type="text" ng-model="data.phone_no" name="phone_no" class="form-control" id="fld_empid" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="fld_name">Team</label>
-                                <select ng-model="data.team" name="team" class="form-control" id="fld_name" required>
-                                    <option value="">-- Please Select --</option>
-                                    <option value="{$ team.id $}" ng-repeat="team in LIST_TEAMS">{$ team.name $}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="fld_empid">Position</label>
-                                <input type="text" ng-model="data.position" name="position" class="form-control" id="fld_empid" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 20px;">
-                        <div style="font-size: 16px; font-weight: 600;">Roles & Permissions</div>
-                        <hr style="margin: 5px 0px 10px 0px"/>
-                        <div class="form-group">
-                            <label for="fld_name">Role</label>
-                            <select ng-model="data.role" name="role" class="form-control" id="fld_name" required>
-                                <option value="">-- Please Select --</option>
-                                <option value="{$ role.id $}" ng-repeat="role in LIST_ROLES">{$ role.name $}</option>
-                            </select>
-                        </div>
-                    </div>
+                    <div ng-include="'tmpl_form_employee'"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="onclick_close()">Close</button>
@@ -197,6 +199,28 @@
             </div>
         </form>
     </script>
+    <script type="text/ng-template" id="tmpl_modal_edit_employee">
+        <form name="form_editEmployee" novalidate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-pencil"></i> Edit Employee
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="onclick_close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div ng-include="'tmpl_form_employee'" ng-init="is_edit_mode=true"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="onclick_close()">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="onsubmit_form(form_editEmployee)" ng-disabled="form_editEmployee.$invalid">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </script>
+
 
 
     <script type="text/ng-template" id="tmpl_rooms">
@@ -473,7 +497,7 @@
 
                                 },
                                 function (responseError) {
-                                    alert("Error! Unable to delete employee.");
+                                    alert("Error! Unable to create employee.");
                                 }
                             );
 
@@ -496,30 +520,106 @@
             };
 
             $scope.editEmployee = function(employee){
-                var fd = new FormData();
-                fd.append('employee_id', employee["id"]);
 
-                $http.post(
-                    "/accounts/employee/edit/",
-                    fd,
-                    {
-                        transformRequest: angular.identity,
-                        headers: {'Content-Type': undefined}
-                    }
-                ).then(
-                    function (response) {
-                        if(response.data.status=='success'){
-                            alert("Success: "+angular.toJson(response.data));   // TODO: remove
-                            $scope.getEmployees();
-                        }else{
-                            alert("Denied! Unable to edit employee.");
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'tmpl_modal_edit_employee',
+                    size: 'lg',
+                    backdrop: 'static',
+                    resolve: {
+                        employee: function() {
+                            var FIELDS = ['id','first_name', 'employee_id', 'email', 'phone_no', 'team', 'position', 'role'];
+                            var data = {};
+
+                            for(var i=0;i<FIELDS.length;i++){
+                                var fld = FIELDS[i];
+                                var val = null;
+                                if(["team", "role"].indexOf(fld)!==-1){
+                                    val = employee[fld]["id"]+"";
+                                }else{
+                                    val = employee[fld];
+                                }
+                                data[fld] = val;
+                            }
+
+                            return angular.copy(data);
                         }
-
                     },
-                    function (responseError) {
-                        alert("Error! Unable to edit employee.");
-                    }
-                );
+                    controller: function($scope, $uibModalInstance, employee){
+                        $scope.data = angular.copy(employee);
+
+                        $scope.onsubmit_form = function(form_obj){
+
+                            if(form_obj.$invalid){
+                                return;
+                            }
+
+                            var fd = new FormData();
+                            for(var k in $scope.data){
+                                fd.append(k, $scope.data[k]);
+                            }
+
+                            $http.post(
+                                "/accounts/employee/edit/",
+                                fd,
+                                {
+                                    transformRequest: angular.identity,
+                                    headers: {'Content-Type': undefined}
+                                }
+                            ).then(
+                                function (response) {
+                                    if(response.data.status=='success'){
+                                        $uibModalInstance.close(response.data);
+                                    }else{
+                                        alert("Error: "+angular.toJson(response.data));
+                                    }
+
+                                },
+                                function (responseError) {
+                                    alert("Error! Unable to save changes.");
+                                }
+                            );
+
+
+                        };
+
+                        $scope.onclick_close = function(){
+                            $uibModalInstance.dismiss('cancel');
+                        }
+                    },
+                });
+
+                modalInstance.result.then(function (result) {
+                    // Success
+                    $scope.getEmployees();
+                }, function () {
+                    // Modal Closed
+                });
+
+                {#var fd = new FormData();#}
+                {#fd.append('employee_id', employee["id"]);#}
+                {##}
+                {#$http.post(#}
+                {#    "/accounts/employee/edit/",#}
+                {#    fd,#}
+                {#    {#}
+                {#        transformRequest: angular.identity,#}
+                {#        headers: {'Content-Type': undefined}#}
+                {#    }#}
+                {#).then(#}
+                {#    function (response) {#}
+                {#        if(response.data.status=='success'){#}
+                {#            alert("Success: "+angular.toJson(response.data));   // TODO: remove#}
+                {#            $scope.getEmployees();#}
+                {#        }else{#}
+                {#            alert("Denied! Unable to edit employee.");#}
+                {#        }#}
+                {##}
+                {#    },#}
+                {#    function (responseError) {#}
+                {#        alert("Error! Unable to edit employee.");#}
+                {#    }#}
+                {#);#}
             };
 
             function __init__() {

@@ -6,7 +6,7 @@ from django.urls import reverse
 from accounts.models import Employee
 from peopleportal.decorators import employee_login_required
 from utilities.api_utils import ApiResponse
-from accounts.forms import EmployeeForm
+from accounts.forms import EmployeeCreateForm, EmployeeEditForm
 
 
 def login(request):
@@ -84,11 +84,13 @@ def api_employee_create(request):
     if request.method.lower() == 'post':
 
         data = request.POST.dict()
-        form_employee = EmployeeForm(data=data)
+        data['username'] = data['employee_id']
+        form_employee = EmployeeCreateForm(data=data)
 
         if form_employee.is_valid():
-            new_employee = form_employee.save()
-            return ApiResponse.http(status=ApiResponse.ST_SUCCESS, message='New Employee successfully created!')
+            form_employee.save()
+            new_employee = form_employee.instance
+            return ApiResponse.http(status=ApiResponse.ST_SUCCESS, message='New Employee successfully created!', employee_id=new_employee.id)
         else:
             errors = dict(form_employee.errors)
             return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Validation errors.', errors=errors)
@@ -105,19 +107,19 @@ def api_employee_edit(request):
     if request.method.lower() == 'post':
 
         data = request.POST.dict()
-        employee_id = int(request.POST['employee_id'])
+        employee_id = int(request.POST['id'])
 
         try:
             employee = Employee.objects.get(id=employee_id)
 
-            # TODO: Validate employee details
-            # TODO: Update employee details in db
+            form_employee = EmployeeEditForm(data=data, instance=employee)
 
-            return ApiResponse.http(
-                status=ApiResponse.ST_SUCCESS,
-                message='Success! Dummy success response indicating that db was updated.',
-                emp_id=employee.employee_id
-            )
+            if form_employee.is_valid():
+                form_employee.save()
+                return ApiResponse.http(status=ApiResponse.ST_SUCCESS, message='Employee successfully updated!', employee_id=employee_id)
+            else:
+                errors = dict(form_employee.errors)
+                return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Validation errors.', errors=errors)
         except Employee.DoesNotExist:
             return ApiResponse.http(status=ApiResponse.ST_FAILED, message='Invalid employee.')
     else:
