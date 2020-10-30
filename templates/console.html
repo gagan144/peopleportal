@@ -388,9 +388,12 @@
         </div>
 
         <nav class="my-2 my-md-0 mr-md-3">
-            <a class="p-2 text-dark" href="#">
-                <i class="fa fa-cog"></i>&nbsp;&nbsp;Roles
-            </a>
+
+            {% if 'role' in request.emp_permissions.resources %}
+                <a href="javascript: void(0);" class="p-2 text-dark" ng-click="open_modal_roles()">
+                    <i class="fa fa-cog"></i>&nbsp;&nbsp;Roles
+                </a>
+            {% endif %}
 {#            <a class="p-2 text-dark" href="#">Enterprise</a>#}
 {#            <a class="p-2 text-dark" href="#">Support</a>#}
 {#            <a class="p-2 text-dark" href="#">Pricing</a>#}
@@ -494,6 +497,9 @@
 
 
         APP.controller('MainCtrl', function ($scope) {
+            $scope.open_modal_roles = function () {
+                alert("TODO: Role & Permission Management.")
+            }
         });
 
         APP.controller('EmployeeCtrl', function($scope, $http, $uibModal){

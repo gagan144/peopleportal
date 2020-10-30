@@ -4,13 +4,27 @@
     {"code": "employee_read", "name":"Can read employees", "resource": "employee"},
     {"code": "employee_edit", "name":"Can edit employees", "resource": "employee"},
     {"code": "employee_delete", "name":"Can delete employees", "resource": "employee"},
+
     {"code": "conf_room_create", "name":"Can create conference room", "resource": "room"},
     {"code": "conf_room_read", "name":"Can read conference room", "resource": "room"},
     {"code": "conf_room_edit", "name":"Can edit conference room", "resource": "room"},
-    {"code": "conf_room_delete", "name":"Can delete conference room", "resource": "room"}
+    {"code": "conf_room_delete", "name":"Can delete conference room", "resource": "room"},
+
+    {"code": "role_create", "name":"Can create roles", "resource": "role"},
+    {"code": "role_read", "name":"Can read roles", "resource": "role"},
+    {"code": "role_edit", "name":"Can edit roles", "resource": "role"},
+    {"code": "role_delete", "name":"Can delete roles", "resource": "role"},
+
+    {"code": "permission_create", "name":"Can create permission", "resource": "permission"},
+    {"code": "permission_read", "name":"Can read permissions", "resource": "permission"},
+    {"code": "permission_edit", "name":"Can edit permissions", "resource": "permission"},
+    {"code": "permission_delete", "name":"Can delete permissions", "resource": "permission"}
   ],
   "roles": [
-    {"name":"Admin", "permissions":["employee_create", "employee_read", "employee_edit", "employee_delete", "conf_room_create", "conf_room_read", "conf_room_edit", "conf_room_delete"]},
+    {"name":"Admin", "permissions":[
+      "employee_create", "employee_read", "employee_edit", "employee_delete", "conf_room_create", "conf_room_read", "conf_room_edit", "conf_room_delete",
+      "role_create", "role_read", "role_edit", "role_delete", "permission_create", "permission_read", "permission_edit", "permission_delete"
+    ]},
     {"name":"Engg Manager", "permissions":["employee_create", "employee_read", "employee_edit"]},
     {"name":"Office Manager", "permissions":["conf_room_create", "conf_room_read", "conf_room_edit"]},
     {"name":"Default", "permissions":["employee_read", "conf_room_read"]}
