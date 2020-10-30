@@ -355,6 +355,27 @@
             </div>
         </form>
     </script>
+    <script type="text/ng-template" id="tmpl_modal_edit_room">
+        <form name="form_editRoom" novalidate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-pencil"></i> Edit Room
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="onclick_close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div ng-include="'tmpl_form_room'" ng-init="is_edit_mode=true"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="onclick_close()">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="onsubmit_form(form_editRoom)" ng-disabled="form_editRoom.$invalid">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </script>
     <!-- /Room -->
 
     <!-- ========== /Templates ========== -->
@@ -772,6 +793,71 @@
                                 },
                                 function (responseError) {
                                     alert("Error! Unable to create the room.");
+                                }
+                            );
+
+
+                        };
+
+                        $scope.onclick_close = function(){
+                            $uibModalInstance.dismiss('cancel');
+                        }
+                    },
+                });
+
+                modalInstance.result.then(function (result) {
+                    // Success
+                    $scope.getRooms();
+                }, function () {
+                    // Modal Closed
+                });
+
+            };
+
+            $scope.editRoom = function(room){
+
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'tmpl_modal_edit_room',
+                    size: 'lg',
+                    backdrop: 'static',
+                    resolve: {
+                        room: function() {
+                            return angular.copy(room);
+                        }
+                    },
+                    controller: function($scope, $uibModalInstance, room){
+                        $scope.data = angular.copy(room);
+
+                        $scope.onsubmit_form = function(form_obj){
+
+                            if(form_obj.$invalid){
+                                return;
+                            }
+
+                            var fd = new FormData();
+                            for(var k in $scope.data){
+                                fd.append(k, $scope.data[k]);
+                            }
+
+                            $http.post(
+                                "/conference/room/edit/",
+                                fd,
+                                {
+                                    transformRequest: angular.identity,
+                                    headers: {'Content-Type': undefined}
+                                }
+                            ).then(
+                                function (response) {
+                                    if(response.data.status=='success'){
+                                        $uibModalInstance.close(response.data);
+                                    }else{
+                                        alert("Error: "+angular.toJson(response.data));
+                                    }
+
+                                },
+                                function (responseError) {
+                                    alert("Error! Unable to save changes.");
                                 }
                             );
 
