@@ -268,13 +268,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="row in data_rooms|filter:search_text">
-                                <td>{$ row.room_id $}</td>
-                                <td>{$ row.name $}</td>
-                                <td>{$ row.booking_email $}</td>
-                                <td>{$ row.sitting_capacity $}</td>
-                                <td>{$ row.status $}</td>
-                                <td></td>
+                            <tr ng-repeat="room in data_rooms|filter:search_text">
+                                <td>{$ room.room_id $}</td>
+                                <td>{$ room.name $}</td>
+                                <td>{$ room.booking_email $}</td>
+                                <td>{$ room.sitting_capacity $}</td>
+                                <td>{$ room.status $}</td>
+                                <td>
+                                    {% if 'conf_room_edit' in request.emp_permissions.codes %}
+                                        <span class="fa fa-pencil btn_action" ng-click="editRoom(room)"></span>
+                                    {% endif %}
+
+                                    {% if 'conf_room_delete' in request.emp_permissions.codes %}
+                                        <span class="fa fa-trash btn_action" ng-click="deleteRoom(room)"></span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -596,30 +604,6 @@
                     // Modal Closed
                 });
 
-                {#var fd = new FormData();#}
-                {#fd.append('employee_id', employee["id"]);#}
-                {##}
-                {#$http.post(#}
-                {#    "/accounts/employee/edit/",#}
-                {#    fd,#}
-                {#    {#}
-                {#        transformRequest: angular.identity,#}
-                {#        headers: {'Content-Type': undefined}#}
-                {#    }#}
-                {#).then(#}
-                {#    function (response) {#}
-                {#        if(response.data.status=='success'){#}
-                {#            alert("Success: "+angular.toJson(response.data));   // TODO: remove#}
-                {#            $scope.getEmployees();#}
-                {#        }else{#}
-                {#            alert("Denied! Unable to edit employee.");#}
-                {#        }#}
-                {##}
-                {#    },#}
-                {#    function (responseError) {#}
-                {#        alert("Error! Unable to edit employee.");#}
-                {#    }#}
-                {#);#}
             };
 
             function __init__() {
@@ -656,6 +640,34 @@
                         $scope.ui_flags.data_error = error_msg;
                     }
                 );
+            };
+
+            $scope.deleteRoom = function(room){
+                if(confirm("Are you sure you want to delete this room?")){
+                    var fd = new FormData();
+                    fd.append('room_id', room["id"]);
+
+                    $http.post(
+                        "/conference/room/delete/",
+                        fd,
+                        {
+                            transformRequest: angular.identity,
+                            headers: {'Content-Type': undefined}
+                        }
+                    ).then(
+                        function (response) {
+                            if(response.data.status=='success'){
+                                $scope.getRooms();
+                            }else{
+                                alert("Denied! Unable to delete room.");
+                            }
+
+                        },
+                        function (responseError) {
+                            alert("Error! Unable to delete room.");
+                        }
+                    );
+                }
             };
 
             function __init__() {
