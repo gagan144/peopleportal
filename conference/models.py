@@ -24,5 +24,8 @@ class ConferenceRoom(BaseModelMixin):
 
     status      = models.CharField(max_length=32, choices=CH_STATUS, default=ST_AVAILABLE, db_index=True, help_text='Current status of the room')
 
+    class Meta:
+        ordering = ('room_id',)
+
     def __str__(self):
         return self.name
