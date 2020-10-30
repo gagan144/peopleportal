@@ -39,6 +39,8 @@
 <body ng-cloak ng-controller="MainCtrl">
 
     <!-- ========== Templates ========== -->
+
+    <!-- Employee -->
     <script type="text/ng-template" id="tmpl_employees">
         <div>
 
@@ -220,11 +222,31 @@
             </div>
         </form>
     </script>
+    <!-- Employee -->
 
 
-
+    <!--- Room -->
     <script type="text/ng-template" id="tmpl_rooms">
         <div>
+            <div class="row">
+                <div class="col-3 offset-6" align="right">
+                    {% if 'conf_room_create' in request.emp_permissions.codes %}
+                        <button class="btn btn-light" ng-click="addRoom()">
+                            <i class="fa fa-plus"></i> New Room
+                        </button>
+                    {% endif %}
+                </div>
+                <div ng-show="data_rooms.length" class="col-3">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-search-emp">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" ng-model="search_text" class="form-control" placeholder="Search by name, capacity" aria-describedby="inputGroup-search-emp">
+                    </div>
+                </div>
+            </div>
 
             <div ng-if="ui_flags.data==ST_AJAX.LOADING" class="loading" align="center">
                 <img src="{% get_static_prefix %}images/loading_spinner.gif" >
@@ -244,18 +266,6 @@
                     <h4 class="text-primary">No rooms found!</h4>
                 </div>
                 <div ng-if="data_rooms.length">
-                    <div class="row">
-                        <div class="col-3 offset-9">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-search-emp">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                </div>
-                                <input type="text" ng-model="search_text" class="form-control" placeholder="Search by name, capacity" aria-describedby="inputGroup-search-emp">
-                            </div>
-                        </div>
-                    </div>
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -293,6 +303,60 @@
 
         </div>
     </script>
+
+    <script type="text/ng-template" id="tmpl_form_room">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_name">NAME</label>
+                    <input type="text" ng-model="data.name" name="name" class="form-control" id="fld_name" required>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_roomid">ROOM ID <small class="text-muted">(Unique)</small></label>
+                    <input type="text" ng-model="data.room_id" name="room_id" class="form-control" id="fld_roomid" required ng-disabled="is_edit_mode">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_booking_email">BOOKING EMAIL</label>
+                    <input type="email" ng-model="data.booking_email" name="booking_email" class="form-control" id="fld_booking_email" required>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fld_sitting_capacity">SITTING CAPACITY</label>
+                    <input type="number" ng-model="data.sitting_capacity" name="sitting_capacity" class="form-control" id="fld_sitting_capacity" required>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/ng-template" id="tmpl_modal_add_room">
+        <form name="form_addRoom" novalidate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-plus"></i> Add New Room
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="onclick_close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div ng-include="'tmpl_form_room'"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="onclick_close()">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="onsubmit_form(form_addRoom)" ng-disabled="form_addRoom.$invalid">Create</button>
+                </div>
+            </div>
+        </form>
+    </script>
+    <!-- /Room -->
+
     <!-- ========== /Templates ========== -->
 
     <!-- ---------- Header ---------- -->
@@ -613,7 +677,7 @@
         });
 
 
-        APP.controller('RoomCtrl', function($scope, $http){
+        APP.controller('RoomCtrl', function($scope, $http, $uibModal){
             $scope.ui_flags = {
                 data: ST_AJAX.LOADING
             };
@@ -669,6 +733,67 @@
                     );
                 }
             };
+
+            $scope.addRoom = function(){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'tmpl_modal_add_room',
+                    size: 'lg',
+                    backdrop: 'static',
+                    controller: function($scope, $uibModalInstance){
+                        $scope.data = {};
+
+                        $scope.onsubmit_form = function(form_obj){
+
+                            if(form_obj.$invalid){
+                                return;
+                            }
+
+                            var fd = new FormData();
+                            for(var k in $scope.data){
+                                fd.append(k, $scope.data[k]);
+                            }
+
+                            $http.post(
+                                "/conference/room/create/",
+                                fd,
+                                {
+                                    transformRequest: angular.identity,
+                                    headers: {'Content-Type': undefined}
+                                }
+                            ).then(
+                                function (response) {
+                                    if(response.data.status=='success'){
+                                        $uibModalInstance.close(response.data);
+                                    }else{
+                                        alert("Error: "+angular.toJson(response.data));
+                                    }
+
+                                },
+                                function (responseError) {
+                                    alert("Error! Unable to create the room.");
+                                }
+                            );
+
+
+                        };
+
+                        $scope.onclick_close = function(){
+                            $uibModalInstance.dismiss('cancel');
+                        }
+                    },
+                });
+
+                modalInstance.result.then(function (result) {
+                    // Success
+                    $scope.getRooms();
+                }, function () {
+                    // Modal Closed
+                });
+
+            };
+
+
 
             function __init__() {
                 $scope.getRooms();

@@ -10,6 +10,7 @@ api_conferenceRoomResource = ConferenceRoomResource()
 urlpatterns = [
 
     path('room/delete/', views.api_room_delete, name="conference__api_room_delete"),
+    path('room/create/', views.api_room_create, name="conference__api_room_create"),
 
     # Api
     re_path(r'^api/', include(api_conferenceRoomResource.urls)),
