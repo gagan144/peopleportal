@@ -10,13 +10,13 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
 
 
 ## Design
-### Authorization framework implementation
+### RBAC(Role Based access control system) implementation
 - [peopleportal/management/commands/initialize_system.py](peopleportal/management/commands/initialize_system.py)
 - [peopleportal/middlewares.py](peopleportal/middlewares.py)
 - [peopleportal/decorators.py](peopleportal/decorators.py)
 
 
-### Authorization framework usage
+### RBAC usage
 - Backend
     - [accounts/views.py](accounts/views.py)
     - [conference/views.py](conference/views.py)
