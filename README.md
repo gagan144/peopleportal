@@ -61,6 +61,17 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
 | ![](_docs/images/employee_create.png)  | ![](_docs/images/rooms.png)  |
 | ![](_docs/images/room_create.png)  |   |
 
+
+## Change Log
+
+- 2021-05-31
+  - `peopleportal/passwords.json` deprecated.
+  - Created `peopleportal/settings_common.py` to store all common configurations.
+  - `peopleportal/setting.py` now contains only deployment specific configurations like db credentials, etc.
+  - Removed `peopleportal/settings.py`. This should be manually created using `peopleportal/settings_template.py`.
+    
+
+
 ## Submitted By
 - Name: Gagandeep Singh
 - Mobile No: +91 9717568636

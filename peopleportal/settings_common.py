@@ -18,25 +18,16 @@ import os
 # BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Read all configuration passwords
-with open(os.path.join(BASE_DIR, "peopleportal", "passwords.json"), 'r') as f:
-    PASSWORDS = json.loads(f.read())
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '7+@b6pl)@)lw!ws1h06(+!1m91w$rg-35oms@8xv@n0&lm-p#p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,20 +76,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'peopleportal.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': PASSWORDS["database"]["default"]["db_name"],
-        'USER': PASSWORDS["database"]["default"]["user"],
-        'PASSWORD': PASSWORDS["database"]["default"]["password"],
-        'HOST': PASSWORDS["database"]["default"]["host"],
-        'PORT': PASSWORDS["database"]["default"]["port"]
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 # AUTH_PASSWORD_VALIDATORS = [
@@ -141,3 +118,4 @@ STATICFILES_DIRS = [
 
 # Misc
 ADMIN_SITE_HEADER = 'PeoplePortal Administration'
+
