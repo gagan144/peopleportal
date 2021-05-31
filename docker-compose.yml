@@ -1,0 +1,35 @@
+version: '3'
+
+volumes:
+  static-files-peopleportal:
+
+
+services:
+
+  postgresdb:
+    build:
+      context: ./dockers/postgres
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_PASSWORD=postgrespass
+
+  djangoapp:
+    depends_on:
+      - postgresdb
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - static-files-peopleportal:/app/staticfiles
+
+  nginx:
+    depends_on:
+      - postgresdb
+      - djangoapp
+    build:
+      context: ./dockers/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - static-files-peopleportal:/app/static-files-peopleportal
+    ports:
+      - '9000:80'

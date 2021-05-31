@@ -1,1 +1,4 @@
+settings.py
 _settings*.py
+
+staticfiles/*
