@@ -24,12 +24,13 @@ services:
 
   nginx:
     depends_on:
-      - postgresdb
       - djangoapp
+      - postgresdb
     build:
       context: ./dockers/nginx
       dockerfile: Dockerfile
     volumes:
       - static-files-peopleportal:/app/static-files-peopleportal
+#    restart: always
     ports:
       - '9000:80'

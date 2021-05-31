@@ -1,5 +1,2 @@
-dockers/*
+dockers/
 Dockerfile*
-
-settings.py
-_settings*.py
