@@ -5,15 +5,26 @@ function terminateIfFailed(){
     local exit_code=$1
 
     if [ ! $exit_code -eq 0 ]; then
-        echo "[ABORT] Aborting..."
+        echo "[ERROR] Command was not successfully executed. Aborting..."
         exit $exit_code
     fi
 }
 # ----- /Helpers -----
 
 
+echo "----------------------------------------------"
+echo "|               PeoplePortal                 |"
+echo "|              Django Web App                |"
+echo "----------------------------------------------"
+echo ""
+
+
 # Change directory
 cd /app
+
+# Wait for few seconds for postgres to boot up
+echo "[INFO] Heuristically waiting for few seconds for services to boot up..."
+sleep 10s
 
 
 # Apply django migrations
@@ -39,8 +50,12 @@ echo "[INFO] Success! System initialized."
 
 # Create superuser
 echo "[INFO] Creating superuser 'admin' ..."
-python manage.py shell -c "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', 'admin@admin.com', 'admin')"
-echo "[INFO] Done!"
+DJ_USERNAME="admin"
+DJ_EMAIL="admin@example.com"
+DJ_PASSWORD="admin"
+python manage.py shell -c "from django.contrib.auth import get_user_model; UserModel=get_user_model(); UserModel.objects.create_superuser('${DJ_USERNAME}', '${DJ_EMAIL}', '${DJ_PASSWORD}') if not UserModel.objects.filter(username='${DJ_USERNAME}').exists() else None"
+terminateIfFailed $?
+echo "[INFO] Success! Superuser created."
 
 
 # Run uwsgi server

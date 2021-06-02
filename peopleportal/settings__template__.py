@@ -4,7 +4,7 @@ from peopleportal.settings_common import *
 # SECURITY WARNING: keep the secret key used in production secret!
 # Code:
 #   from django.utils.crypto import get_random_string
-#   get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+#   get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#%^&*(-_=+)')
 SECRET_KEY = "--- 50 letter key ----"
 
 

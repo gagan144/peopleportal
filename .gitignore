@@ -1,4 +1,5 @@
 settings.py
 _settings*.py
+!_settings_docker.py
 
 staticfiles/*

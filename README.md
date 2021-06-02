@@ -7,6 +7,7 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
 - **Web Framework**: Python-Django
 - **Backend**: PostgreSQL
 - **Frontend**: Bootstrap, AngularJs, JQuery
+- **DevOps**: AWS/Heroku/Docker
 
 
 ## Design
@@ -21,10 +22,12 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
     - [accounts/views.py](accounts/views.py)
     - [conference/views.py](conference/views.py)
 - Frontend
-    -  [templates/console.html](templates/console.html)
+    - [templates/console.html](templates/console.html)
     
-    
-## Installation Instructions
+
+## Installation
+
+### 1. Manual Installation Instructions
 - Create virtual environment
 - Activate virtual environment
 - Clone project
@@ -32,10 +35,11 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
     ```cmd
     pip install -r requirements.txt
     ```
-- Edit database settings in `settings.py`
-- Run database migrations:
+- Create `settings.py` in `peopleportal` directory using the template `settings__template__.py`.
+  Edit all database and other settings variable.
+  
+- Apply database migrations:
     ```cmd
-    python manage.py makemigrations
     python manage.py migrate
     ```
 - Create superuser
@@ -50,7 +54,19 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
     ```cmd
     python manage.py runserver
     ```
-- Open any browser and go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+- Open any browser and go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) or open [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) to configure system.
+
+
+### 2. Docker Installation
+- Refer `docker-compose.yml`, `Dockerfile`, directory `dockers/`, `peopleportal/_settings_docker.py` file for better understanding.
+- Build images and run  containers:
+    <br/>Inside the project directory, run the following command
+    ```cmd
+    docker-compose up --build
+    ```
+- Default credentials:
+    <br/>Admin username: admin
+    <br/>Admin password: admin
 
 
 ## Screenshots
@@ -61,12 +77,6 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
 | ![](_docs/images/employee_create.png)  | ![](_docs/images/rooms.png)  |
 | ![](_docs/images/room_create.png)  |   |
 
-
-## Dockers
-Refer `docker-compose.yml`, `Dockerfile`, directory `dockers/`.
-
-Default user: admin
-<br/>Default password: admin
 
 
 ## Change Logs

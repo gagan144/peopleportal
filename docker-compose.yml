@@ -21,6 +21,14 @@ services:
       dockerfile: Dockerfile
     volumes:
       - static-files-peopleportal:/app/staticfiles
+    environment:
+       - PP_SECRET_KEY=+3ji@o8^0mxm81k&lh_&wgmqil=keb)hs)i#!+wplpm199z@xn
+       - PP_DEBUG=1
+       - PP_PG_HOST=postgresdb
+       - PP_PG_PORT=5432
+       - PP_PG_USERNAME=postgres
+       - PP_PG_PASSWORD=postgrespass
+       - PP_PG_DBNAME=peopleportal
 
   nginx:
     depends_on:
