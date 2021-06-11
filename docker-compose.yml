@@ -8,9 +8,10 @@ services:
 
   postgresdb:
     image: postgres:latest
-    volumes:
-      - ./dockers/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+#    volumes:
+#      - ./dockers/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
+      - POSTGRES_DB=peopleportal
       - POSTGRES_PASSWORD=postgrespass
 
   djangoapp:
