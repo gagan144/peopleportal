@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-clusterip-service
+spec:
+  type: ClusterIP
+  selector:
+    project: peopleportal
+    component: postgresdb
+  ports:
+    - port: 5432
+      targetPort: 5432

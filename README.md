@@ -1,16 +1,18 @@
-# BlueStacks - PeoplePortal
+# PeoplePortal
 
+This project is a playground for developing django web application and deploying it on cloud using Heroku, AWS, GCP, Docker, Kubernetes, etc.
 
-Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](https://github.com/bluestacks/senior-backend-developer-assignment-adv)
+Earlier, this project was submitted as an assignment for the BlueStacks position [Senior Member of Technical Staff (SMTS)](https://github.com/bluestacks/senior-backend-developer-assignment-adv). 
+Now, this project is used for experimenting with new technologies.
 
 ## Technology Stack
 - **Web Framework**: Python-Django
 - **Backend**: PostgreSQL
 - **Frontend**: Bootstrap, AngularJs, JQuery
-- **DevOps**: AWS/Heroku/Docker
+- **DevOps**: AWS/Heroku/Docker/Kubernetes
 
 
-## Design
+## Application
 ### RBAC(Role Based access control system) implementation
 - [peopleportal/management/commands/initialize_system.py](peopleportal/management/commands/initialize_system.py)
 - [peopleportal/middlewares.py](peopleportal/middlewares.py)
@@ -57,16 +59,57 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
 - Open any browser and go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) or open [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) to configure system.
 
 
-### 2. Docker Installation
+### 2. Docker
+
+#### 2.1 Manually build docker images:
+- Django application:
+    ```cmd
+    docker build -t gagan144/peopleportal-djangoapp .
+    docker push gagan144/peopleportal-djangoapp
+    ```
+- File server for kubernetes deployment:
+    <br/>This container image is used to deploy static file behind ingress-nginx in a kubernetes cluster. This is not used in docker-compose setup. 
+    ```cmd
+    docker build -t gagan144/peopleportal-fileserver ./dockers/fileserver-k8s
+    docker push gagan144/peopleportal-fileserver
+    ```
+
+**Docker Hub Link**: https://hub.docker.com/r/gagan144/peopleportal-djangoapp
+
+
+#### 2.2 Run containers using 'docker-compose':
 - Refer `docker-compose.yml`, `Dockerfile`, directory `dockers/`, `peopleportal/_settings_docker.py` file for better understanding.
-- Build images and run  containers:
+- Build images and run containers:
     <br/>Inside the project directory, run the following command
     ```cmd
     docker-compose up --build
     ```
-- Default credentials:
-    <br/>Admin username: admin
-    <br/>Admin password: admin
+    
+    
+- Default django admin credentials:
+    <br/>URL: [http://localhost:9000/admin](http://localhost:9000/admin)
+    <br/>Username: admin
+    <br/>Password: admin
+    
+### 3. Kubernetes
+All kubernetes yaml files are place inside [k8s](k8s) directory. The architecture is as follows:
+
+![](_docs/kubernetes/k8s_architecture.jpg)
+
+- **Setup**:
+    - (If using minikube) Enable minikube ingress add-on:
+        ```cmd
+        minikube addons enable ingress
+        ```
+    - Create a k8s Secret:
+        ```cmd
+        kubectl create secret generic secret-peopleportal --from-literal PG_PASSWORD=pgrootpass
+        ```
+
+- **Deploy**: To deploy the project inside kubernetes cluster, use the following command:
+    ```cmd
+    kubectl apply -f k8s
+    ```
 
 
 ## Screenshots
@@ -91,6 +134,5 @@ Submission for BlueStacks position [Senior Member of Technical Staff (SMTS)](htt
 
 ## Submitted By
 - Name: Gagandeep Singh
-- Mobile No: +91 9717568636
 - Email: singh.gagan144@gmail.com
-- Date: October 2020
+- Submitted on: October 2020

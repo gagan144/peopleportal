@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fileserver-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      project: peopleportal
+      component: fileserver
+  template:
+    metadata:
+      labels:
+        project: peopleportal
+        component: fileserver
+    spec:
+      volumes:
+        - name: volume-staticfiles
+          persistentVolumeClaim:
+            claimName: pvc-staticfiles
+      containers:
+        - name: fileserver-nginx
+          image: gagan144/peopleportal-fileserver
+          ports:
+            - containerPort: 8002
+          volumeMounts:
+            - name: volume-staticfiles
+              mountPath: /app/staticfiles-peopleportal   # Path inside the container
+              subPath: staticfiles   # Sub-directory inside the PVC

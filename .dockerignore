@@ -1,2 +1,4 @@
 dockers/
+_docs/
+k8s/
 Dockerfile*

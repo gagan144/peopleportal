@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: djangoapp-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      project: peopleportal
+      component: djangoapp
+  template:
+    metadata:
+      labels:
+        project: peopleportal
+        component: djangoapp
+    spec:
+      volumes:
+        - name: volume-staticfiles
+          persistentVolumeClaim:
+            claimName: pvc-staticfiles
+      containers:
+        - name: djangoapp
+          image: gagan144/peopleportal-djangoapp
+          ports:
+            - containerPort: 8001
+          volumeMounts:
+            - name: volume-staticfiles
+              mountPath: /app/staticfiles   # Path inside the container
+              subPath: staticfiles   # Sub-directory inside the PVC
+          env:
+            - name: PP_SECRET_KEY
+              value: +3ji@o8^0mxm81k&lh_&wgmqil=keb)hs)i#!+wplpm199z@xn
+            - name: PP_DEBUG
+              value: '1'
+            - name: PP_PG_HOST
+              value: postgres-clusterip-service
+            - name: PP_PG_PORT
+              value: '5432'
+            - name: PP_PG_USERNAME
+              value: postgres
+            - name: PP_PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-peopleportal
+                  key: PG_PASSWORD
+            - name: PP_PG_DBNAME
+              value: peopleportal

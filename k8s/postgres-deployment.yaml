@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1   # Always set this to 1
+  selector:
+    matchLabels:
+      project: peopleportal
+      component: postgresdb
+  template:
+    metadata:
+      labels:
+        project: peopleportal
+        component: postgresdb
+    spec:
+      volumes:
+        - name: volume-postgresdb-data
+          persistentVolumeClaim:
+            claimName: pvc-postgresdb-data
+      containers:
+        - name: postgresdb
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: volume-postgresdb-data
+              mountPath: /var/lib/postgresql/data   # Path inside the container
+              subPath: postgres-data   # Sub-directory inside the PVC
+          env:
+            - name: POSTGRES_DB
+              value: peopleportal
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-peopleportal
+                  key: PG_PASSWORD
