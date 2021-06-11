@@ -97,10 +97,18 @@ All kubernetes yaml files are place inside [k8s](k8s) directory. The architectur
 ![](_docs/kubernetes/k8s_architecture.jpg)
 
 - **Setup**:
-    - (If using minikube) Enable minikube ingress add-on:
+    - (IF USING MINIKUBE) Enable minikube ingress add-on:
         ```cmd
         minikube addons enable ingress
         ```
+    - (OPTIONAL) Create namespace `ns-peopleportal`:
+        ```cmd
+        kubectl create namespace ns-peopleportal
+        
+        # Switch to namespace
+        kubectl config set-context --current --namespace=ns-peopleportal
+        ```    
+     
     - Create a k8s Secret:
         ```cmd
         kubectl create secret generic secret-peopleportal --from-literal PG_PASSWORD=pgrootpass
